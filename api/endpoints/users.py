@@ -1,7 +1,7 @@
 from ast import Str
 from typing import List
 
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from sql_app.crud import users as crud
@@ -35,11 +35,16 @@ def create_user(user: userschema.UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db=db, user=user)
 
 @router.get("/webhooks", tags=['webhooks'])
-def verify_url(hub_mode: str,hub_challenge:int,hub_verify_token: str, db: Session = Depends(get_db)):
-   # db_user = crud.get_user_by_email(db, email=user.email)
-    #if db_user:
-    #    raise HTTPException(status_code=400, detail="Email already registered")
-    return hub_challenge#crud.create_user(db=db, user=user)
+def verify_url(request:Request,db: Session = Depends(get_db)):
+    params = request.query_params
+    print(params)
+    print(params['hub.challenge'])
+    return params['hub.challenge']
+@router.post("/webhooks", tags=['webhooks'])
+async def verify_url(request: Request, db: Session = Depends(get_db)):
+    rbody=await request.body()
+    print(rbody)
+    return  {"received_request_body": rbody}
 
 @router.get("/users/", response_model=List[userschema.User], tags=['users'])
 async def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
