@@ -1,7 +1,7 @@
 from ast import Str
 from typing import List
-
 from fastapi import Depends, APIRouter, HTTPException, Request
+from fastapi.responses import PlainTextResponse
 from sqlalchemy.orm import Session
 
 from sql_app.crud import users as crud
@@ -34,12 +34,13 @@ def create_user(user: userschema.UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
     return crud.create_user(db=db, user=user)
 
-@router.get("/webhooks", tags=['webhooks'])
+@router.get("/webhooks", response_class=PlainTextResponse,tags=['webhooks'])
 def verify_url(request:Request,db: Session = Depends(get_db)):
     params = request.query_params
     print(params)
     print(params['hub.challenge'])
-    return params['hub.challenge']
+    valuesr=params['hub.challenge']
+    return valuesr
 @router.post("/webhooks", tags=['webhooks'])
 async def verify_url(request: Request, db: Session = Depends(get_db)):
     rbody=await request.body()
