@@ -110,6 +110,10 @@ async def sentsms(tokenstr:str,phone:str,message:str,prevsmsid:str):
     }
     print
     print(payload1,headers)
+    conn.request("POST", "/v14.0/103570139153202/messages", payload1, headers)
+    res = conn.getresponse()
+    data = res.read()
+    print(data.decode("utf-8"))#
     return payload
 
 async def update_sent(db:AsyncSession,msg_id:str):
@@ -129,7 +133,4 @@ async def update_sent(db:AsyncSession,msg_id:str):
         print("Error Found",e)
     
     await db.flush()
-    #conn.request("POST", "/{{Version}}/{{Phone-Number-ID}}/messages", payload, headers)
-    #res = conn.getresponse()
-    #data = res.read()
-    #print(data.decode("utf-8"))#
+    

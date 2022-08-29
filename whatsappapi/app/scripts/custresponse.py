@@ -52,7 +52,7 @@ async def sync_inbounds():
                 smstext=""
                 print("phone",ac.phone_no_id,ac.display_phone,ac.text_body)
                 print("token",settings.WHATSAPP_API_TOKEN)
-                await smsinbound.sentsms(settings.WHATSAPP_API_TOKEN,ac.phone_no_id,'test sms',ac.sms_id)
+                
                 dataup={"state":3}
                 if ac.text_body=="Hi":
                     smstext="Thank you for reaching to Cross Gate Solutions, Your bulk sms provider.Send \n 1. To continue \n 2.Ask question"
@@ -63,7 +63,7 @@ async def sync_inbounds():
                     smstext="Welcome feel free to ask any question"
                 else:
                     smstext="oops, we are working on this menu"
-                await smsinbound.sentsms(settings.WHATSAPP_API_TOKEN,ac.phone_no_id,smstext,ac.sms_id)
+                await smsinbound.sentsms(settings.WHATSAPP_API_TOKEN,ac.contact_wa_id,smstext,ac.sms_id)
                 await smsinbound.update_sent(db,ac.sms_id)
 
         except  SQLAlchemyError:
